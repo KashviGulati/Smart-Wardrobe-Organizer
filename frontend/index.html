@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Closet Organizer</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>👗 Smart Closet Organizer</header>
+
+    <section class="add-item">
+        <h2>➕ Add Clothing Item</h2>
+        <input type="text" id="name" placeholder="Item Name">
+        <input type="text" id="category" placeholder="Category">
+        <input type="text" id="color" placeholder="Color">
+        <button onclick="addClothing()">Add Item</button>
+    </section>
+
+    <section class="inventory">
+        <h2>👕 Wardrobe Inventory</h2>
+        <input type="text" id="search" placeholder="Search..." onkeyup="searchClothing()">
+        <ul id="clothing-list"></ul>
+    </section>
+
+    <section class="weather">
+        <h2>🌤 Weather-Based Outfit Suggestions</h2>
+        <p id="weather-info">Loading weather...</p>
+    </section>
+
+    <script src="script.js"></script>
+</body>
+</html>
