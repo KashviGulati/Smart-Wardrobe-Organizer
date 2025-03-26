@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Closet</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>My Closet</h1>
+        <nav>
+            <a href="index.html">Home</a>
+            <a href="closet.html">Closet</a>
+            <a href="recommendations.html">Recommendations</a>
+            <a href="settings.html">Settings</a>
+        </nav>
+    </header>
+
+    <section class="closet-container">
+        <h2>Your Clothing Collection</h2>
+        <form id="add-clothing-form">
+            <input type="text" id="name" placeholder="Clothing Name" required>
+            <select id="category">
+                <option value="t-shirt">T-Shirt</option>
+                <option value="pants">Pants</option>
+                <option value="jacket">Jacket</option>
+            </select>
+            <input type="text" id="color" placeholder="Color" required>
+            <select id="occasion">
+                <option value="Casual">Casual</option>
+                <option value="Formal">Formal</option>
+            </select>
+            <input type="file" id="image" accept="image/*">
+            <button type="submit">Add Item</button>
+        </form>
+        <form id="filter-form">
+            <select id="category-filter">
+                <option value="">All Categories</option>
+                <option value="t-shirt">T-Shirt</option>
+                <option value="pants">Pants</option>
+                <option value="jacket">Jacket</option>
+            </select>
+            <select id="occasion-filter">
+                <option value="">All Occasions</option>
+                <option value="Casual">Casual</option>
+                <option value="Formal">Formal</option>
+            </select>
+            <button type="submit">Filter</button>
+        </form>
+        <div id="clothing-list"></div>
+    </section>
+
+    <footer>
+        <p>&copy; 2025 Smart Closet Organizer</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

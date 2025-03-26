@@ -1,130 +1,113 @@
-/* 🌙 Dark-Themed, Minimalist & Professional Styling */
+/* Minimalist & Elegant Design */
 body {
-    font-family: 'Poppins', sans-serif;
-    background: #1e1e2f;
-    color: #ffffff;
-    text-align: center;
+    font-family: "Poppins", sans-serif;
+    background: #f5f5f5;
+    color: #333;
     margin: 0;
+    padding: 0;
+    text-align: center;
+}
+
+body.dark {
+    background: #333;
+    color: #f5f5f5;
 }
 
 header {
-    background: #2a2a3a;
+    background: linear-gradient(to right, #d3cfcf, #eae8e8);
     padding: 20px;
-    font-size: 28px;
-    font-weight: bold;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-section {
-    background: #2f2f44;
+header.dark {
+    background: #444;
+}
+
+h1 {
+    font-size: 2rem;
+    color: #444;
+}
+
+.weather-section, .outfit-suggestions, .wardrobe {
+    background: white;
     padding: 20px;
     margin: 20px auto;
     width: 80%;
-    border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease-in-out;
 }
 
-input, button {
-    margin: 10px;
-    padding: 12px;
-    border: none;
-    border-radius: 8px;
-    font-size: 16px;
-    outline: none;
+.dark .weather-section, .dark .outfit-suggestions, .dark .wardrobe {
+    background: #555;
 }
 
-input {
-    background: #40405a;
-    color: white;
-    width: 80%;
+.weather-section:hover, .outfit-suggestions:hover, .wardrobe:hover {
+    transform: scale(1.02);
+}
+
+#weather-info img {
+    width: 100px;
+    transition: opacity 0.5s;
 }
 
 button {
-    background: #ff6b81;
+    background: #5a5a5a;
     color: white;
+    border: none;
+    padding: 12px 18px;
+    font-size: 16px;
+    border-radius: 8px;
     cursor: pointer;
+    transition: all 0.3s;
+}
+
+button:hover {
+    background: #3d3d3d;
+    transform: scale(1.05);
+}
+
+select, input[type="text"], input[type="file"] {
+    padding: 10px;
+    margin: 5px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+}
+
+/* Outfit Cards */
+#outfit-container, #clothing-list {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.outfit {
+    background: rgba(0, 0, 0, 0.05);
+    padding: 15px;
+    border-radius: 10px;
+    width: 200px;
+    text-align: center;
     transition: 0.3s;
 }
 
-button:hover {
-    background: #e63950;
-    transform: scale(1.05);
+.outfit img {
+    width: 100px;
+    border-radius: 50%;
 }
 
-/* 🎨 Wardrobe Item List */
-ul {
-    list-style: none;
-    padding: 0;
+.outfit:hover {
+    transform: translateY(-5px);
+    background: rgba(0, 0, 0, 0.1);
 }
 
-li {
-    background: #40405a;
-    padding: 12px;
-    margin: 5px;
-    border-radius: 8px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+footer {
+    padding: 10px;
+    background: #ddd;
+    margin-top: 20px;
+    font-size: 14px;
 }
 
-/* 🌤 Weather Section */
-.weather {
-    text-align: center;
-}
-
-.weather img {
-    width: 50px;
-    vertical-align: middle;
-}
-
-/* 💡 Add Transitions for a Smooth UI */
-section, button, input, li {
-    transition: all 0.3s ease-in-out;
-}
-/* 🌀 Fade-in Animation for Sections */
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-section {
-    animation: fadeIn 0.8s ease-in-out;
-}
-
-/* 🔄 Button Hover Effects */
-button {
-    background: #ff6b81;
-    color: white;
-    cursor: pointer;
-    transition: background 0.3s ease, transform 0.2s ease-in-out;
-}
-
-button:hover {
-    background: #e63950;
-    transform: scale(1.05);
-}
-
-/* 🎭 Smooth Input Focus */
-input {
-    transition: all 0.3s ease-in-out;
-}
-
-input:focus {
-    border: 2px solid #ff6b81;
-    background: #3a3a50;
-}
-
-/* 🏷️ Wardrobe Item Slide-in Effect */
-@keyframes slideIn {
-    from { opacity: 0; transform: translateX(-30px); }
-    to { opacity: 1; transform: translateX(0); }
-}
-
-li {
-    animation: slideIn 0.5s ease-out;
-}
-
-/* ✨ Smooth Section Hover */
-section:hover {
-    box-shadow: 0 6px 12px rgba(255, 107, 129, 0.3);
+.dark footer {
+    background: #444;
 }
