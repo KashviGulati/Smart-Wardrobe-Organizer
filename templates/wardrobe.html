@@ -1,20 +1,41 @@
+<!-- wardrobe.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Your Wardrobe</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wardrobe</title>
+    <style>
+        .wardrobe-item {
+            display: inline-block;
+            width: 150px;
+            margin: 10px;
+            text-align: center;
+        }
+        .wardrobe-item img {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+        }
+        .delete-btn {
+            display: block;
+            margin-top: 5px;
+            color: red;
+            text-decoration: none;
+        }
+    </style>
 </head>
 <body>
-    <h2>Your Wardrobe</h2>
-    <div class="wardrobe-gallery">
-        {% for item in items %}
+    <h1>Your Wardrobe</h1>
+    <div>
+        {% for item in wardrobe_items %}
             <div class="wardrobe-item">
-                <img src="{{ url_for('static', filename='images/' + item[1]) }}" alt="{{ item[1] }}">
-                <p>Category: {{ item[2] }}</p>
+                <img src="{{ url_for('static', filename='images/' + item.filename) }}" alt="Clothing Item">
+                <p>{{ item.category }}</p>
+                <a href="{{ url_for('delete_item', item_id=item.id) }}" class="delete-btn">Delete</a>
             </div>
         {% endfor %}
     </div>
-    <br><a href="{{ url_for('home') }}">Back to Home</a>
+    <a href="/">Back to Home</a>
 </body>
 </html>

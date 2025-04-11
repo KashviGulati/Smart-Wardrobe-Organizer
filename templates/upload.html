@@ -2,21 +2,24 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Upload Outfit</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Clothes</title>
 </head>
 <body>
-    <h2>Upload a Clothing Item</h2>
-    <form method="POST" enctype="multipart/form-data">
-        <label>Category:</label>
-        <input type="text" name="category" required><br><br>
+    <h1>Upload New Clothing Item</h1>
+    <form action="{{ url_for('upload') }}" method="POST" enctype="multipart/form-data">
+        <label for="file">Select Clothing Image:</label>
+        <input type="file" name="file" id="file" required><br><br>
 
-        <label>Image:</label>
-        <input type="file" name="image" accept="image/*" required><br><br>
+        <label for="category">Category:</label>
+        <select name="category" required>
+            <option value="Top">Top</option>
+            <option value="Bottom">Bottom</option>
+            <option value="Outerwear">Outerwear</option>
+            <option value="Footwear">Footwear</option>
+        </select><br><br>
 
         <button type="submit">Upload</button>
     </form>
-
-    <br><a href="{{ url_for('home') }}">Back to Home</a>
 </body>
 </html>

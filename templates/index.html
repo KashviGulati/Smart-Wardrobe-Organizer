@@ -2,16 +2,13 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Smart Wardrobe Organizer</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Closet Organizer</title>
 </head>
 <body>
-    <h1>Welcome to Your Smart Wardrobe</h1>
-    <p>This is your personal wardrobe dashboard. Start uploading your outfits!</p>
-    <a href="{{ url_for('upload') }}">Upload New Outfit</a>
-    <br>
-    <a href="{{ url_for('view_wardrobe') }}">View Your Wardrobe</a>
-
-
+    <h1>Welcome to Smart Closet Organizer</h1>
+    <a href="{{ url_for('upload') }}">Upload New Clothes</a><br>
+    <a href="{{ url_for('wardrobe') }}">View Wardrobe</a><br>
+    <a href="{{ url_for('suggest_outfit_page') }}">Get Outfit Suggestions</a><br>
 </body>
 </html>
