@@ -20,3 +20,12 @@ def suggest_outfit(weather):
             outfit = "Sweater or Jacket"
 
     return outfit
+
+def suggest_mood_outfit(sentiment):
+    # Suggest outfits based on sentiment
+    if sentiment == 'positive':
+        return "Bright colors (e.g., red, yellow) or vibrant patterns with a T-shirt and Jeans"
+    elif sentiment == 'negative':
+        return "Muted colors (e.g., grey, navy) or cozy fabrics with a Sweater and Pants"
+    else:  # neutral
+        return "Neutral tones (e.g., beige, white) or classic styles with a Shirt and Chinos"

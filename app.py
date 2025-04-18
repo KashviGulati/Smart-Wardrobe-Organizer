@@ -2,17 +2,16 @@ from flask import Flask, render_template, request, redirect, url_for
 from werkzeug.utils import secure_filename
 import os
 import sqlite3
-from outfit_rules import suggest_outfit  # Import the outfit suggestion function
-from weather_api import get_weather  # You should have a weather fetching function
+from outfit_rules import suggest_outfit, suggest_mood_outfit
+from weather_api import get_weather
+from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 
 app = Flask(__name__)
 
-# Set the upload folder and allowed extensions
 UPLOAD_FOLDER = 'static/images'
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
-# Create database connection function
 def get_db():
     conn = sqlite3.connect('wardrobe.db')
     conn.row_factory = sqlite3.Row
@@ -46,8 +45,8 @@ def upload():
     return render_template('upload.html')
 
 # Route to view all clothes in the wardrobe
-@app.route('/wardrobe')
-def wardrobe():
+@app.route('/view_wardrobe')
+def view_wardrobe():
     conn = get_db()
     wardrobe_items = conn.execute('SELECT * FROM wardrobe').fetchall()
     conn.close()
@@ -60,9 +59,9 @@ def delete_item(item_id):
     conn.execute('DELETE FROM wardrobe WHERE id = ?', (item_id,))
     conn.commit()
     conn.close()
-    return redirect(url_for('wardrobe'))
+    return redirect(url_for('view_wardrobe'))
 
-# Route for outfit suggestions
+# Route for outfit suggestions (weather-based)
 @app.route('/suggest_outfit')
 def suggest_outfit_page():
     weather = get_weather()  # Function to fetch current weather data (returns a tuple)
@@ -70,6 +69,24 @@ def suggest_outfit_page():
     temp, weather_condition = weather  # Unpack the returned tuple
 
     return render_template('suggest.html', outfit=outfit, temp=temp, weather_condition=weather_condition)
+
+# Route for mood-based outfit suggestions
+@app.route('/suggest_mood', methods=['GET', 'POST'])
+def suggest_mood_page():
+    if request.method == 'POST':
+        mood_text = request.form['mood']
+        analyzer = SentimentIntensityAnalyzer()
+        scores = analyzer.polarity_scores(mood_text)
+        compound = scores['compound']
+        if compound >= 0.05:
+            sentiment = 'positive'
+        elif compound <= -0.05:
+            sentiment = 'negative'
+        else:
+            sentiment = 'neutral'
+        outfit = suggest_mood_outfit(sentiment)
+        return render_template('suggest_mood.html', mood=mood_text, sentiment=sentiment, outfit=outfit)
+    return render_template('suggest_mood.html')
 
 # Helper function to check allowed file extensions
 def allowed_file(filename):
@@ -80,14 +97,6 @@ def allowed_file(filename):
 def get_weather_data():
     weather = get_weather()  # Example of using the weather API
     return render_template('weather.html', weather=weather)
-
-# Change this route to 'view_wardrobe' in app.py
-@app.route('/wardrobe')
-def view_wardrobe():
-    conn = get_db()
-    wardrobe_items = conn.execute('SELECT * FROM wardrobe').fetchall()
-    conn.close()
-    return render_template('wardrobe.html', wardrobe_items=wardrobe_items)
 
 if __name__ == '__main__':
     app.run(debug=True)

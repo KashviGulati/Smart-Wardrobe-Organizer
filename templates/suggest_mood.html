@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mood-Based Outfit Suggestion</title>
+</head>
+<body>
+    <h1>Mood-Based Outfit Suggestion</h1>
+    
+    <!-- Form to collect mood input -->
+    <form method="POST" action="{{ url_for('suggest_mood_page') }}">
+        <label for="mood">How are you feeling today?</label><br>
+        <textarea name="mood" rows="4" cols="50" required></textarea><br><br>
+        <button type="submit">Get Outfit Suggestion</button>
+    </form>
+
+    <!-- Display mood, sentiment, and outfit if provided -->
+    {% if mood %}
+        <h3>Your Mood:</h3>
+        <p>"{{ mood }}"</p>
+        <p>Sentiment: {{ sentiment | capitalize }}</p>
+        <h3>Suggested Outfit:</h3>
+        <p>{{ outfit }}</p>
+    {% endif %}
+    
+    <br><a href="{{ url_for('home') }}">Back to Home</a>
+    
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9311d1405f956766',t:'MTc0NDc4Njk0OS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
