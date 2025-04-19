@@ -1,41 +1,88 @@
-<!-- wardrobe.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wardrobe</title>
-    <style>
-        .wardrobe-item {
-            display: inline-block;
-            width: 150px;
-            margin: 10px;
-            text-align: center;
-        }
-        .wardrobe-item img {
-            width: 100px;
-            height: 100px;
-            object-fit: cover;
-        }
-        .delete-btn {
-            display: block;
-            margin-top: 5px;
-            color: red;
-            text-decoration: none;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Your Wardrobe</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
-    <h1>Your Wardrobe</h1>
-    <div>
-        {% for item in wardrobe_items %}
-            <div class="wardrobe-item">
-                <img src="{{ url_for('static', filename='images/' + item.filename) }}" alt="Clothing Item">
-                <p>{{ item.category }}</p>
-                <a href="{{ url_for('delete_item', item_id=item.id) }}" class="delete-btn">Delete</a>
-            </div>
-        {% endfor %}
+  <nav class="navbar" id="navbar">
+    <div class="container">
+      <a href="{{ url_for('home') }}" class="navbar-brand">Smart Closet</a>
+      <div class="nav-links">
+        <a href="{{ url_for('home') }}" class="nav-link">Home</a>
+        <a href="{{ url_for('upload') }}" class="nav-link">Upload</a>
+        <a href="{{ url_for('view_wardrobe') }}" class="nav-link">Wardrobe</a>
+        <a href="{{ url_for('suggest_outfit_page') }}" class="nav-link">Weather Outfit</a>
+        <a href="{{ url_for('suggest_mood_page') }}" class="nav-link">Mood Outfit</a>
+      </div>
     </div>
-    <a href="/">Back to Home</a>
+  </nav>
+
+  <div class="mode-toggle">
+    <input type="checkbox" id="mode-switch" class="mode-switch" onchange="toggleMode()">
+    <label for="mode-switch"></label>
+  </div>
+
+  <div class="loading" id="loading"></div>
+
+  <div class="container mt-28">
+    <h1 class="text-3xl font-bold mb-6">Your Wardrobe</h1>
+    <div class="wardrobe-grid">
+      {% for item in wardrobe_items %}
+        <div class="card wardrobe-item">
+          <img src="{{ url_for('static', filename='images/' + item.filename) }}" alt="Clothing Item">
+          <p class="mt-2 font-semibold">{{ item.category }}</p>
+          <a href="{{ url_for('delete_item', item_id=item.id) }}" class="delete-btn mt-2 block">Delete</a>
+        </div>
+      {% endfor %}
+    </div>
+    <a href="{{ url_for('home') }}" class="btn mt-6">Back to Home</a>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const navLinks = document.querySelectorAll('.nav-link');
+      const loading = document.getElementById('loading');
+      const navbar = document.getElementById('navbar');
+      let lastScroll = 0;
+
+      navLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+          loading.classList.add('show-loading');
+          setTimeout(() => {
+            loading.classList.remove('show-loading');
+          }, 1000);
+        });
+      });
+
+      window.addEventListener('scroll', () => {
+        const currentScroll = window.pageYOffset;
+        if (currentScroll > lastScroll && currentScroll > 70) {
+          navbar.classList.add('hidden');
+        } else {
+          navbar.classList.remove('hidden');
+        }
+        if (currentScroll > 50) {
+          navbar.classList.add('scrolled');
+        } else {
+          navbar.classList.remove('scrolled');
+        }
+        lastScroll = currentScroll;
+      });
+    });
+
+    function toggleMode() {
+      document.body.classList.toggle('dark-mode');
+      localStorage.setItem('darkMode', document.body.classList.contains('dark-mode'));
+    }
+
+    if (localStorage.getItem('darkMode') === 'true') {
+      document.body.classList.add('dark-mode');
+      document.getElementById('mode-switch').checked = true;
+    }
+  </script>
 </body>
 </html>

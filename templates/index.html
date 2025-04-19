@@ -1,15 +1,99 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Smart Closet Organizer</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Smart Closet Organizer</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
-    <h1>Welcome to Smart Closet Organizer</h1>
-    <a href="{{ url_for('upload') }}">Upload New Clothes</a><br>
-    <a href="{{ url_for('view_wardrobe') }}">View Wardrobe</a><br>
-    <a href="{{ url_for('suggest_outfit_page') }}">Get Weather-Based Outfit Suggestions</a><br>
-    <a href="{{ url_for('suggest_mood_page') }}">Get Mood-Based Outfit Suggestions</a><br>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9311d1418897bf66',t:'MTc0NDc4Njk0OS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+  <nav class="navbar" id="navbar">
+    <div class="container">
+      <a href="{{ url_for('home') }}" class="navbar-brand">Smart Closet</a>
+      <div class="nav-links">
+        <a href="{{ url_for('home') }}" class="nav-link">Home</a>
+        <a href="{{ url_for('upload') }}" class="nav-link">Upload</a>
+        <a href="{{ url_for('view_wardrobe') }}" class="nav-link">Wardrobe</a>
+        <a href="{{ url_for('suggest_outfit_page') }}" class="nav-link">Weather Outfit</a>
+        <a href="{{ url_for('suggest_mood_page') }}" class="nav-link">Mood Outfit</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="mode-toggle">
+    <input type="checkbox" id="mode-switch" class="mode-switch" onchange="toggleMode()">
+    <label for="mode-switch"></label>
+  </div>
+
+  <div class="loading" id="loading"></div>
+
+  <div class="container mt-28">
+    <div class="hero">
+      <h1 class="text-4xl font-bold mb-4">Welcome to Smart Wardrobe</h1>
+      <p class="text-lg mb-6">Organize your wardrobe, get outfit suggestions, and style your day!</p>
+      <a href="{{ url_for('upload') }}" class="btn">Get Started</a>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
+      <div class="card">
+        <h3 class="text-xl font-semibold mb-2">Upload Clothes</h3>
+        <p>Add new items to your wardrobe with ease.</p>
+        <a href="{{ url_for('upload') }}" class="btn mt-4 block text-center">Upload Now</a>
+      </div>
+      <div class="card">
+        <h3 class="text-xl font-semibold mb-2">View Wardrobe</h3>
+        <p>Browse and manage your clothing collection.</p>
+        <a href="{{ url_for('view_wardrobe') }}" class="btn mt-4 block text-center">View Wardrobe</a>
+      </div>
+      <div class="card">
+        <h3 class="text-xl font-semibold mb-2">Get Suggestions</h3>
+        <p>Find the perfect outfit for any occasion.</p>
+        <a href="{{ url_for('suggest_outfit_page') }}" class="btn mt-4 block text-center">Get Outfit</a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const navLinks = document.querySelectorAll('.nav-link');
+      const loading = document.getElementById('loading');
+      const navbar = document.getElementById('navbar');
+      let lastScroll = 0;
+
+      navLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+          loading.classList.add('show-loading');
+          setTimeout(() => {
+            loading.classList.remove('show-loading');
+          }, 1000);
+        });
+      });
+
+      window.addEventListener('scroll', () => {
+        const currentScroll = window.pageYOffset;
+        if (currentScroll > lastScroll && currentScroll > 70) {
+          navbar.classList.add('hidden');
+        } else {
+          navbar.classList.remove('hidden');
+        }
+        if (currentScroll > 50) {
+          navbar.classList.add('scrolled');
+        } else {
+          navbar.classList.remove('scrolled');
+        }
+        lastScroll = currentScroll;
+      });
+    });
+
+    function toggleMode() {
+      document.body.classList.toggle('dark-mode');
+      localStorage.setItem('darkMode', document.body.classList.contains('dark-mode'));
+    }
+
+    if (localStorage.getItem('darkMode') === 'true') {
+      document.body.classList.add('dark-mode');
+      document.getElementById('mode-switch').checked = true;
+    }
+  </script>
+</body>
 </html>

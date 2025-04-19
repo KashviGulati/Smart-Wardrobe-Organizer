@@ -1,21 +1,61 @@
-<!-- suggest.html -->
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Outfit Suggestions</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Outfit Suggestions</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
-    <h1>Outfit Suggestion Based on Weather</h1>
-    
-    <!-- Display the current weather -->
-    <p>Current Weather: {{ weather_condition }} with a temperature of {{ temp }}°C</p>
+  <nav class="navbar" id="navbar">
+    <div class="container flex justify-between items-center py-4">
+      <h1 class="text-xl font-bold text-F9F5F0">Smart Closet</h1>
+      <div class="space-x-4">
+        <a href="{{ url_for('home') }}" class="hover:text-C68E53 nav-link">Home</a>
+        <a href="{{ url_for('upload') }}" class="hover:text-C68E53 nav-link">Upload</a>
+        <a href="{{ url_for('view_wardrobe') }}" class="hover:text-C68E53 nav-link">Wardrobe</a>
+        <a href="{{ url_for('suggest_outfit_page') }}" class="hover:text-C68E53 nav-link">Weather Outfit</a>
+        <a href="{{ url_for('suggest_mood_page') }}" class="hover:text-C68E53 nav-link">Mood Outfit</a>
+      </div>
+    </div>
+  </nav>
 
-    <!-- Display the outfit suggestion -->
-    <h3>Suggested Outfit:</h3>
-    <p>{{ outfit }}</p>
-    
+  <div class="loading" id="loading">Loading...</div>
+
+  <div class="container mt-24">
+    <h1 class="text-3xl font-bold mb-6 text-8A9A5B">Outfit Suggestion Based on Weather</h1>
+    <div class="card p-6">
+      <p class="text-lg mb-4 text-4A4A4A">Current Weather: {{ weather_condition }} with a temperature of {{ temp }}°C</p>
+      <h3 class="text-xl font-semibold mb-2 text-8A9A5B">Suggested Outfit:</h3>
+      <p class="text-4A4A4A">{{ outfit }}</p>
+    </div>
+    <a href="{{ url_for('home') }}" class="btn mt-6">Back to Home</a>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const navLinks = document.querySelectorAll('.nav-link');
+      const loading = document.getElementById('loading');
+      const navbar = document.getElementById('navbar');
+
+      navLinks.forEach(link => {
+        link.addEventListener('click', () => {
+          loading.classList.add('show-loading');
+          setTimeout(() => {
+            loading.classList.remove('show-loading');
+          }, 1000);
+        });
+      });
+
+      window.addEventListener('scroll', () => {
+        if (window.scrollY > 50) {
+          navbar.classList.add('scrolled');
+        } else {
+          navbar.classList.remove('scrolled');
+        }
+      });
+    });
+  </script>
 </body>
 </html>

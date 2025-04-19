@@ -1,30 +1,90 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mood-Based Outfit Suggestion</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mood-Based Outfit Suggestion</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
-    <h1>Mood-Based Outfit Suggestion</h1>
-    
-    <!-- Form to collect mood input -->
-    <form method="POST" action="{{ url_for('suggest_mood_page') }}">
-        <label for="mood">How are you feeling today?</label><br>
-        <textarea name="mood" rows="4" cols="50" required></textarea><br><br>
-        <button type="submit">Get Outfit Suggestion</button>
-    </form>
+  <nav class="navbar" id="navbar">
+    <div class="container flex justify-between items-center py-4">
+      <h1 class="text-xl font-bold text-F9F5F0">Smart Closet</h1>
+      <div class="space-x-4">
+        <a href="{{ url_for('home') }}" class="hover:text-C68E53 nav-link">Home</a>
+        <a href="{{ url_for('upload') }}" class="hover:text-C68E53 nav-link">Upload</a>
+        <a href="{{ url_for('view_wardrobe') }}" class="hover:text-C68E53 nav-link">Wardrobe</a>
+        <a href="{{ url_for('suggest_outfit_page') }}" class="hover:text-C68E53 nav-link">Weather Outfit</a>
+        <a href="{{ url_for('suggest_mood_page') }}" class="hover:text-C68E53 nav-link">Mood Outfit</a>
+      </div>
+    </div>
+  </nav>
 
-    <!-- Display mood, sentiment, and outfit if provided -->
+  <div class="loading" id="loading">Loading...</div>
+
+  <div class="container mt-24">
+    <h1 class="text-3xl font-bold mb-6 text-8A9A5B">Mood-Based Outfit Suggestion</h1>
+    <div class="card max-w-md mx-auto p-6">
+      <form method="POST" action="{{ url_for('suggest_mood_page') }}" id="moodForm">
+        <div class="form-group">
+          <label for="mood" class="text-8A9A5B">How are you feeling today?</label>
+          <textarea name="mood" id="mood" rows="4" class="w-full" required></textarea>
+        </div>
+        <button type="submit" class="btn w-full">Get Outfit Suggestion</button>
+      </form>
+    </div>
+
     {% if mood %}
-        <h3>Your Mood:</h3>
-        <p>"{{ mood }}"</p>
-        <p>Sentiment: {{ sentiment | capitalize }}</p>
-        <h3>Suggested Outfit:</h3>
-        <p>{{ outfit }}</p>
+      <div class="card mt-6 p-6">
+        <h3 class="text-xl font-semibold mb-2 text-8A9A5B">Your Mood:</h3>
+        <p class="text-4A4A4A">"{{ mood }}"</p>
+        <p class="mt-2 text-4A4A4A">Sentiment: {{ sentiment | capitalize }}</p>
+        <h3 class="text-xl font-semibold mt-4 mb-2 text-8A9A5B">Suggested Outfit:</h3>
+        <p class="text-4A4A4A">{{ outfit }}</p>
+      </div>
     {% endif %}
-    
-    <br><a href="{{ url_for('home') }}">Back to Home</a>
-    
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9311d1405f956766',t:'MTc0NDc4Njk0OS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+
+    <a href="{{ url_for('home') }}" class="btn mt-6">Back to Home</a>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const form = document.getElementById('moodForm');
+      const loading = document.getElementById('loading');
+      const navbar = document.getElementById('navbar');
+      const navLinks = document.querySelectorAll('.nav-link');
+
+      form.addEventListener('submit', (e) => {
+        const mood = document.getElementById('mood').value;
+        if (!mood.trim()) {
+          e.preventDefault();
+          alert('Please enter your mood.');
+          return;
+        }
+        loading.classList.add('show-loading');
+        setTimeout(() => {
+          loading.classList.remove('show-loading');
+        }, 1000);
+      });
+
+      navLinks.forEach(link => {
+        link.addEventListener('click', () => {
+          loading.classList.add('show-loading');
+          setTimeout(() => {
+            loading.classList.remove('show-loading');
+          }, 1000);
+        });
+      });
+
+      window.addEventListener('scroll', () => {
+        if (window.scrollY > 50) {
+          navbar.classList.add('scrolled');
+        } else {
+          navbar.classList.remove('scrolled');
+        }
+      });
+    });
+  </script>
+</body>
 </html>

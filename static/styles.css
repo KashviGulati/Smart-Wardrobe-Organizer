@@ -1,29 +1,361 @@
-body {
-    font-family: 'Segoe UI', sans-serif;
-    background-color: #f9f9f9;
-    color: #333;
-    text-align: center;
-    padding-top: 60px;
+/* static/styles.css */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+
+:root {
+  --bg-light: linear-gradient(135deg, #F8F1E9 0%, #F5F5F5 100%);
+  --bg-dark: linear-gradient(135deg, #1E2A44 0%, #2F3A5F 100%);
+  --navbar-light: linear-gradient(90deg, #1E2A44, #2F3A5F);
+  --navbar-dark: linear-gradient(90deg, #161F33, #253151);
+  --text-light: #F8F1E9; /* Ivory for hero and general text in light mode */
+  --text-dark: #F8F1E9; /* Ivory for visibility in dark mode */
+  --accent: #B76E79;
+  --card-bg-light: #F9F9F9; /* Light gray for cards in light mode */
+  --card-bg-dark: #2A3752;
+  --border-light: #EDE4DB;
+  --border-dark: #253151;
 }
 
+body {
+  font-family: 'Poppins', sans-serif;
+  background: var(--bg-light);
+  color: var(--text-light);
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  transition: background 0.3s ease, color 0.3s ease;
+}
 
-.wardrobe-gallery {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
+body.dark-mode {
+  background: var(--bg-dark);
+  color: var(--text-dark);
+}
+
+.navbar {
+  background: var(--navbar-light);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  position: fixed;
+  width: 100%;
+  top: 0;
+  z-index: 1000;
+  height: 70px;
+  transition: transform 0.3s ease, background 0.3s ease;
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid var(--border-light);
+}
+
+body.dark-mode .navbar {
+  background: var(--navbar-dark);
+  border-bottom: 1px solid var(--border-dark);
+}
+
+.navbar.scrolled {
+  transform: translateY(-5px);
+}
+
+.navbar.hidden {
+  transform: translateY(-70px);
+}
+
+.navbar .container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.navbar-brand {
+  color: #B76E79;
+  font-size: 1.5rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.nav-links {
+  display: flex;
+  gap: 1rem;
+}
+
+.nav-link {
+  color: #B76E79;
+  background-color: #1C253A;
+  padding: 0.75rem 1.5rem;
+  border-radius: 6px;
+  text-decoration: none;
+  font-weight: 600;
+  transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease;
+}
+
+body.dark-mode .nav-link {
+  background-color: #161F33;
+}
+
+.nav-link:hover {
+  background-color: #B76E79;
+  color: #1E2A44;
+  transform: translateY(-2px);
+}
+
+.container {
+  max-width: 1200px;
+  margin: 100px auto 20px;
+  padding: 20px;
+}
+
+.hero {
+  background: #1E2A44; /* Solid navy background */
+  color: #F8F1E9; /* Ivory text */
+  padding: 4rem 2rem;
+  border-radius: 12px;
+  text-align: center;
+  margin-bottom: 2rem;
+  position: relative;
+}
+
+body.dark-mode .hero {
+  background: #2F3A5F; /* Darker shade for dark mode */
+}
+
+.card {
+  background: var(--card-bg-light);
+  border: 1px solid var(--border-light);
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  animation: fadeIn 0.8s ease-out;
+}
+
+body.dark-mode .card {
+  background: var(--card-bg-dark);
+  border: 1px solid var(--border-dark);
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+}
+
+.card h3 {
+  color: #1E2A44; /* Navy text for headings in light mode */
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+body.dark-mode .card h3 {
+  color: #F8F1E9; /* Ivory text for headings in dark mode */
+}
+
+.card p {
+  color: #1E2A44; /* Navy text for paragraphs in light mode */
+  font-size: 1rem;
+}
+
+body.dark-mode .card p {
+  color: #F8F1E9; /* Ivory text for paragraphs in dark mode */
+}
+
+.btn {
+  background-color: #B76E79;
+  color: #1E2A44;
+  padding: 0.75rem 1.5rem;
+  border-radius: 6px;
+  text-decoration: none;
+  font-weight: 600;
+  display: inline-block;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.btn:hover {
+  background-color: #A3535F;
+  transform: translateY(-2px);
+}
+
+.btn:active {
+  opacity: 0.9;
+  transform: translateY(0);
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.form-group label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: var(--text-light);
+}
+
+body.dark-mode .form-group label {
+  color: var(--text-dark);
+}
+
+.form-group input,
+.form-group textarea,
+.form-group select {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid var(--border-light);
+  border-radius: 6px;
+  font-size: 1rem;
+  background-color: #FFFFFF;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+body.dark-mode .form-group input,
+body.dark-mode .form-group textarea,
+body.dark-mode .form-group select {
+  border: 1px solid var(--border-dark);
+  background-color: #2A3752;
+  color: #F8F1E9;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+  border-color: #B76E79;
+  box-shadow: 0 0 5px rgba(183, 110, 121, 0.3);
+  outline: none;
+}
+
+.wardrobe-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 1.5rem;
+  margin-top: 2rem;
 }
 
 .wardrobe-item {
-    margin: 10px;
-    padding: 10px;
-    text-align: center;
-    border: 1px solid #ccc;
-    border-radius: 8px;
+  text-align: center;
+  transition: transform 0.3s ease, rotate 0.3s ease;
+}
+
+.wardrobe-item:hover {
+  transform: scale(1.05) rotate(2deg);
 }
 
 .wardrobe-item img {
-    width: 150px;
-    height: 150px;
-    object-fit: cover;
-    border-radius: 5px;
+  width: 100%;
+  height: 250px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  transition: opacity 0.3s ease;
+}
+
+.wardrobe-item:hover img {
+  opacity: 0.9;
+}
+
+.delete-btn {
+  color: #B76E79;
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.3s ease, transform 0.2s ease;
+}
+
+.delete-btn:hover {
+  color: #A3535F;
+  transform: scale(1.1);
+}
+
+.loading {
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 50px;
+  height: 50px;
+  border: 5px solid var(--border-light);
+  border-top: 5px solid #B76E79;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+body.dark-mode .loading {
+  border: 5px solid var(--border-dark);
+  border-top: 5px solid #B76E79;
+}
+
+@keyframes spin {
+  0% { transform: translate(-50%, -50%) rotate(0deg); }
+  100% { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+.show-loading {
+  display: block;
+}
+
+h1 {
+  margin-top: 0;
+  padding-top: 1rem;
+  font-size: 2.5rem;
+  color: var(--text-light);
+  animation: fadeInDown 1s ease-out;
+}
+
+body.dark-mode h1 {
+  color: var(--text-dark);
+}
+
+@keyframes fadeInDown {
+  from { opacity: 0; transform: translateY(-20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.mode-toggle {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1001;
+}
+
+.mode-switch {
+  appearance: none;
+  width: 60px;
+  height: 34px;
+  background: #B76E79;
+  border-radius: 17px;
+  position: relative;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.mode-switch:checked {
+  background: #1E2A44;
+}
+
+.mode-switch::before {
+  content: '';
+  position: absolute;
+  width: 26px;
+  height: 26px;
+  background: #FFFFFF;
+  border-radius: 50%;
+  top: 4px;
+  left: 4px;
+  transition: transform 0.3s ease;
+}
+
+.mode-switch:checked::before {
+  transform: translateX(26px);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@media (min-width: 768px) {
+  .wardrobe-grid {
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  }
+  .hero {
+    padding: 4rem 3rem;
+  }
 }
