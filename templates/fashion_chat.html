@@ -1,4 +1,4 @@
-<!-- templates/fashion_chat.html -->
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,7 +7,7 @@
   <title>Fashion Advisor</title>
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
   <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
-  <!-- Add font awesome for icons -->
+  
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <style>
     .chat-container {
@@ -143,7 +143,7 @@
   <div class="container mt-24 mx-auto max-w-4xl">
     <h1 class="text-3xl font-bold mb-6 text-center">Fashion Advisor Chat</h1>
 
-    <!-- API Key Setup Section (Initially Hidden) -->
+    
     <div id="api-key-section" class="card p-6 mx-auto max-w-2xl mb-6 {% if has_api_key %}hidden{% endif %}">
       <h3 class="text-xl font-semibold mb-4 text-center">Setup Fashion Advisor</h3>
       <form id="api-key-form" class="space-y-4">
@@ -160,16 +160,16 @@
       </form>
     </div>
 
-    <!-- Chat Interface -->
+   
     <div id="chat-interface" class="card p-6 mx-auto max-w-2xl {% if not has_api_key %}hidden{% endif %}">
       <div class="chat-container" id="chat-container">
-        <!-- Bot welcome message -->
+      
         <div class="message bot-message">
           <p>👋 Hi there! I'm your fashion advisor. Ask me anything about fashion, outfit combinations, or style advice!</p>
         </div>
       </div>
       
-      <!-- Suggestion chips -->
+      
       <div class="suggestions-container flex flex-wrap justify-center my-4">
         <div class="suggestion-chip" onclick="useSuggestion('How to style a white shirt?')">How to style a white shirt?</div>
         <div class="suggestion-chip" onclick="useSuggestion('What colors work well together?')">What colors work well together?</div>
@@ -177,14 +177,14 @@
         <div class="suggestion-chip" onclick="useSuggestion('Trends this season')">Trends this season</div>
       </div>
       
-      <!-- Typing indicator -->
+      
       <div class="typing-indicator" id="typing-indicator">
         <span class="typing-dot"></span>
         <span class="typing-dot"></span>
         <span class="typing-dot"></span>
       </div>
       
-      <!-- Input area -->
+      
       <div class="chat-input-container">
         <input type="text" class="chat-input" id="user-input" placeholder="Ask me about fashion..." onkeypress="handleKeyPress(event)">
         <button class="send-button" onclick="sendMessage()">
@@ -198,22 +198,22 @@
     let geminiApiKey = localStorage.getItem('geminiApiKey');
     
     document.addEventListener('DOMContentLoaded', () => {
-      // Show appropriate section based on API key presence
+      
       updateInterfaceVisibility();
       
-      // Handle API key form submission
+      
       document.getElementById('api-key-form').addEventListener('submit', function(e) {
         e.preventDefault();
         const apiKey = document.getElementById('gemini-api-key').value.trim();
         if (apiKey) {
           localStorage.setItem('geminiApiKey', apiKey);
           geminiApiKey = apiKey;
-          // Validate API key (make a test request)
+          
           validateApiKey(apiKey);
         }
       });
       
-      // Navigation and UI setup
+     
       const navLinks = document.querySelectorAll('.nav-link');
       const loading = document.getElementById('loading');
       const navbar = document.getElementById('navbar');
@@ -255,11 +255,11 @@
     }
     
     function validateApiKey(apiKey) {
-      // Show typing indicator
+      
       const typingIndicator = document.getElementById('typing-indicator');
       typingIndicator.style.display = 'block';
       
-      // Make a test request to validate the API key
+      
       fetch('/validate_api_key', {
         method: 'POST',
         headers: {
@@ -290,18 +290,18 @@
       const message = userInput.value.trim();
       
       if (message) {
-        // Add user message to chat
+        
         addUserMessage(message);
         userInput.value = '';
         
-        // Show typing indicator
+        
         const typingIndicator = document.getElementById('typing-indicator');
         typingIndicator.style.display = 'block';
         
-        // Scroll to bottom
+        
         scrollToBottom();
         
-        // Send message to server
+        
         fetch('/get_fashion_advice', {
           method: 'POST',
           headers: {
@@ -314,7 +314,7 @@
         })
         .then(response => response.json())
         .then(data => {
-          // Hide typing indicator and add bot response
+          
           typingIndicator.style.display = 'none';
           addBotMessage(data.response);
         })
@@ -339,7 +339,7 @@
       const messageElement = document.createElement('div');
       messageElement.className = 'message bot-message';
       
-      // Convert line breaks to <br> tags and format the response
+      
       const formattedMessage = message.replace(/\n/g, '<br>');
       messageElement.innerHTML = `<p>${formattedMessage}</p>`;
       

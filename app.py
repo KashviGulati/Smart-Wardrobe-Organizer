@@ -138,15 +138,7 @@ def suggest_mood_page():
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
-# Add these imports at the top of the file
-from flask import Flask, render_template, request, redirect, url_for, flash, jsonify
-from werkzeug.utils import secure_filename
-import os
-import sqlite3
-from outfit_rules import suggest_outfit, suggest_mood_outfit
-from weather_api import get_weather
-from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
-from chatbot import initialize_gemini, get_fashion_advice  
+ 
 
 @app.route('/fashion_chat')
 def fashion_chat():
@@ -158,7 +150,7 @@ def validate_api_key():
     api_key = data.get('api_key')
     
     try:
-        # Attempt to initialize Gemini with the provided API key
+        
         result = initialize_gemini(api_key)
         return jsonify({'success': result})
     except Exception as e:
@@ -179,7 +171,7 @@ def get_fashion_advice_route():
     except Exception as e:
         return jsonify({'response': f"Sorry, I encountered an error: {str(e)}"})
 
-# Rest of the app.py file remains unchanged
+
 
 def init_db():
     conn = get_db()

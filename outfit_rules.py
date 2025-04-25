@@ -156,12 +156,10 @@ def suggest_mood_outfit(sentiment):
         if None not in combo:
             outfits.append(list(combo))
     
-    # Add standalone dress outfits
-    for dress in standalone_items[0]:
-        if dress:
-            outfits.append([dress])
     
-    # If no outfits, return all categories for recommendation
+    
+    
+    
     missing_categories = []
     if not outfits:
         for category_group in tops_bottoms:
@@ -170,7 +168,7 @@ def suggest_mood_outfit(sentiment):
             missing_categories.extend(category_group)
     
     return {
-        'outfits': outfits,  # List of outfit combinations
+        'outfits': outfits,  
         'description': description,
         'categories': missing_categories,
         'colors': get_mood_colors(sentiment)
