@@ -7,39 +7,77 @@
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
   <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
-<body>
-  <nav class="navbar" id="navbar">
-    <div class="container">
-      <a href="{{ url_for('home') }}" class="navbar-brand">Smart Closet</a>
-      <div class="nav-links">
-        <a href="{{ url_for('home') }}" class="nav-link">Home</a>
-        <a href="{{ url_for('upload') }}" class="nav-link">Upload</a>
-        <a href="{{ url_for('view_wardrobe') }}" class="nav-link">Wardrobe</a>
-        <a href="{{ url_for('suggest_outfit_page') }}" class="nav-link">Weather Outfit</a>
-        <a href="{{ url_for('suggest_mood_page') }}" class="nav-link">Mood Outfit</a>
+<body class="bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-white transition-all duration-300">
+
+  <nav class="navbar sticky top-0 bg-white dark:bg-gray-800 shadow-md z-10">
+    <div class="container mx-auto p-4 flex justify-between items-center">
+      <a href="{{ url_for('home') }}" class="text-3xl font-bold text-blue-500">Smart Closet</a>
+      <div class="nav-links flex space-x-6">
+        <a href="{{ url_for('home') }}" class="text-lg hover:text-blue-500">Home</a>
+        <a href="{{ url_for('upload') }}" class="text-lg hover:text-blue-500">Upload</a>
+        <a href="{{ url_for('view_wardrobe') }}" class="text-lg hover:text-blue-500">Wardrobe</a>
+        <a href="{{ url_for('suggest_outfit_page') }}" class="text-lg hover:text-blue-500">Weather Outfit</a>
+        <a href="{{ url_for('suggest_mood_page') }}" class="text-lg hover:text-blue-500">Mood Outfit</a>
       </div>
     </div>
   </nav>
 
-  <div class="mode-toggle">
+  <!-- Dark Mode Switch -->
+  <div class="mode-toggle fixed top-4 right-4">
     <input type="checkbox" id="mode-switch" class="mode-switch" onchange="toggleMode()">
-    <label for="mode-switch"></label>
+    <label for="mode-switch" class="cursor-pointer bg-gray-300 dark:bg-gray-600 p-2 rounded-full"></label>
   </div>
 
-  <div class="loading" id="loading"></div>
+  <!-- Loading Indicator -->
+  <div class="loading" id="loading" style="display: none;"></div>
 
-  <div class="container mt-28">
-    <h1 class="text-3xl font-bold mb-6">Your Wardrobe</h1>
-    <div class="wardrobe-grid">
+  <div class="container mx-auto mt-28 p-4">
+    <h1 class="text-3xl font-bold mb-6 text-gray-900">Your Wardrobe</h1>
+
+    <!-- Season, Gender, and Category Filters -->
+    <div class="filters mb-6 text-center">
+      <label for="season" class="mr-2 font-semibold">Season:</label>
+      <select id="season" class="p-2 rounded border border-gray-400 mb-4 md:mb-0">
+        <option value="all" {% if season_filter == '' %}selected{% endif %}>All Seasons</option>
+        <option value="summer" {% if season_filter == 'summer' %}selected{% endif %}>Summer</option>
+        <option value="winter" {% if season_filter == 'winter' %}selected{% endif %}>Winter</option>
+        <option value="fall" {% if season_filter == 'fall' %}selected{% endif %}>Fall</option>
+        <option value="spring" {% if season_filter == 'spring' %}selected{% endif %}>Spring</option>
+      </select>
+
+      <label for="gender" class="mr-2 font-semibold">Gender:</label>
+      <select id="gender" class="p-2 rounded border border-gray-400 mb-4 md:mb-0">
+        <option value="all" {% if gender_filter == '' %}selected{% endif %}>All Genders</option>
+        <option value="male" {% if gender_filter == 'male' %}selected{% endif %}>Male</option>
+        <option value="female" {% if gender_filter == 'female' %}selected{% endif %}>Female</option>
+        <option value="unisex" {% if gender_filter == 'unisex' %}selected{% endif %}>Unisex</option>
+      </select>
+
+      <label for="category" class="mr-2 font-semibold">Category:</label>
+      <select id="category" class="p-2 rounded border border-gray-400">
+        <option value="all" {% if category_filter == '' %}selected{% endif %}>All Categories</option>
+        <option value="T-shirt" {% if category_filter == 'T-shirt' %}selected{% endif %}>T-shirt</option>
+        <option value="Jeans" {% if category_filter == 'Jeans' %}selected{% endif %}>Jeans</option>
+        <option value="Shirt" {% if category_filter == 'Shirt' %}selected{% endif %}>Shirt</option>
+        <option value="Jacket" {% if category_filter == 'Jacket' %}selected{% endif %}>Jacket</option>
+        <option value="Sweater" {% if category_filter == 'Sweater' %}selected{% endif %}>Sweater</option>
+        <option value="Dress" {% if category_filter == 'Dress' %}selected{% endif %}>Dress</option>
+      </select>
+    </div>
+
+    <!-- Wardrobe Display Grid -->
+    <div class="wardrobe-grid grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
       {% for item in wardrobe_items %}
-        <div class="card wardrobe-item">
-          <img src="{{ url_for('static', filename='images/' + item.filename) }}" alt="Clothing Item">
-          <p class="mt-2 font-semibold">{{ item.category }}</p>
-          <a href="{{ url_for('delete_item', item_id=item.id) }}" class="delete-btn mt-2 block">Delete</a>
+        <div class="card wardrobe-item bg-white rounded-lg shadow-lg p-4 hover:shadow-2xl transform transition-all" 
+             data-season="{{ item.season }}" data-gender="{{ item.gender }}" data-category="{{ item.category }}">
+          <img src="{{ url_for('static', filename='images/' + item.filename) }}" alt="Clothing Item" class="w-full h-48 object-cover rounded-lg">
+          <p class="mt-2 font-semibold text-center">{{ item.category }}</p>
+          <a href="{{ url_for('delete_item', item_id=item.id) }}" class="delete-btn text-red-600 text-center block mt-2">Delete</a>
         </div>
       {% endfor %}
     </div>
-    <a href="{{ url_for('home') }}" class="btn mt-6">Back to Home</a>
+
+    <a href="{{ url_for('home') }}" class="btn bg-blue-500 text-white rounded-full py-2 px-6 hover:bg-blue-700 mt-8 inline-block mx-auto">Back to Home</a>
   </div>
 
   <script>
@@ -51,9 +89,9 @@
 
       navLinks.forEach(link => {
         link.addEventListener('click', (e) => {
-          loading.classList.add('show-loading');
+          loading.style.display = 'block';
           setTimeout(() => {
-            loading.classList.remove('show-loading');
+            loading.style.display = 'none';
           }, 1000);
         });
       });
@@ -72,6 +110,31 @@
         }
         lastScroll = currentScroll;
       });
+
+      // Filter functionality
+      const filters = document.querySelectorAll('.filters select');
+      filters.forEach(filter => {
+        filter.addEventListener('change', () => {
+          const season = document.getElementById('season').value;
+          const gender = document.getElementById('gender').value;
+          const category = document.getElementById('category').value;
+          const wardrobeItems = document.querySelectorAll('.wardrobe-item');
+
+          wardrobeItems.forEach(item => {
+            const itemSeason = item.getAttribute('data-season');
+            const itemGender = item.getAttribute('data-gender');
+            const itemCategory = item.getAttribute('data-category');
+
+            if ((season === 'all' || itemSeason === season) && 
+                (gender === 'all' || itemGender === gender) &&
+                (category === 'all' || itemCategory === category)) {
+              item.style.display = 'block';
+            } else {
+              item.style.display = 'none';
+            }
+          });
+        });
+      });
     });
 
     function toggleMode() {
@@ -84,5 +147,5 @@
       document.getElementById('mode-switch').checked = true;
     }
   </script>
-</body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'933394928eb7b051',t:'MTc0NTE0MDk3OS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>

@@ -3,70 +3,114 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mood-Based Outfit Suggestion</title>
+  <title>Mood-Based Outfit Suggestions</title>
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
   <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
   <nav class="navbar" id="navbar">
     <div class="container flex justify-between items-center py-4">
-      <h1 class="text-xl font-bold text-F9F5F0">Smart Closet</h1>
-      <div class="space-x-4">
-        <a href="{{ url_for('home') }}" class="hover:text-C68E53 nav-link">Home</a>
-        <a href="{{ url_for('upload') }}" class="hover:text-C68E53 nav-link">Upload</a>
-        <a href="{{ url_for('view_wardrobe') }}" class="hover:text-C68E53 nav-link">Wardrobe</a>
-        <a href="{{ url_for('suggest_outfit_page') }}" class="hover:text-C68E53 nav-link">Weather Outfit</a>
-        <a href="{{ url_for('suggest_mood_page') }}" class="hover:text-C68E53 nav-link">Mood Outfit</a>
+      <a href="{{ url_for('home') }}" class="navbar-brand">Smart Closet</a>
+      <div class="nav-links">
+        <a href="{{ url_for('home') }}" class="nav-link">Home</a>
+        <a href="{{ url_for('upload') }}" class="nav-link">Upload</a>
+        <a href="{{ url_for('view_wardrobe') }}" class="nav-link">Wardrobe</a>
+        <a href="{{ url_for('suggest_outfit_page') }}" class="nav-link">Weather Outfit</a>
+        <a href="{{ url_for('suggest_mood_page') }}" class="nav-link">Mood Outfit</a>
       </div>
     </div>
   </nav>
 
-  <div class="loading" id="loading">Loading...</div>
+  <div class="mode-toggle">
+    <input type="checkbox" id="mode-switch" class="mode-switch" onchange="toggleMode()">
+    <label for="mode-switch"></label>
+  </div>
 
-  <div class="container mt-24">
-    <h1 class="text-3xl font-bold mb-6 text-8A9A5B">Mood-Based Outfit Suggestion</h1>
-    <div class="card max-w-md mx-auto p-6">
-      <form method="POST" action="{{ url_for('suggest_mood_page') }}" id="moodForm">
-        <div class="form-group">
-          <label for="mood" class="text-8A9A5B">How are you feeling today?</label>
-          <textarea name="mood" id="mood" rows="4" class="w-full" required></textarea>
-        </div>
-        <button type="submit" class="btn w-full">Get Outfit Suggestion</button>
-      </form>
+  <div class="loading" id="loading"></div>
+
+  <div class="container mt-24 mx-auto max-w-4xl">
+    <h1 class="text-3xl font-bold mb-6 text-center">Mood-Based Outfit Suggestions</h1>
+
+    <!-- Flash messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="flash-message {{ category }} p-4 my-4 rounded text-center">
+            {{ message }}
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <div class="card p-6 mx-auto max-w-2xl">
+      {% if mood %}
+        <p class="text-lg mb-4 text-center">Your mood input: "{{ mood }}" (Sentiment: {{ sentiment }})</p>
+        
+        {% if outfits %}
+          <h3 class="text-xl font-semibold mb-2 text-center">Suggested Outfits from Your Wardrobe:</h3>
+          {% for outfit in outfits %}
+            <div class="card p-4 mb-4">
+              <h4 class="text-lg font-semibold mb-2 text-center">Outfit {{ loop.index }}</h4>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 justify-items-center">
+                {% for item in outfit %}
+                  <div class="wardrobe-item bg-white rounded-lg shadow-lg p-4 max-w-xs">
+                    <img src="{{ url_for('static', filename='images/' + item.filename) }}" alt="Clothing Item" class="w-full h-auto max-h-64 object-cover rounded-lg">
+                    <p class="mt-2 font-semibold text-center">{{ item.category }} ({{ item.season }}, {{ item.gender }})</p>
+                  </div>
+                {% endfor %}
+              </div>
+            </div>
+          {% endfor %}
+          {% if colors %}
+            <div class="color-recommendation p-4 bg-gray-100 rounded-lg mb-4">
+              <p class="font-medium text-center">Color Recommendation:</p>
+              <p class="text-center">{{ colors }}</p>
+            </div>
+          {% endif %}
+        {% elif missing_categories %}
+          <h3 class="text-xl font-semibold mb-2 text-center">Recommended Outfit:</h3>
+          <p class="text-center mb-4">{{ outfit_description }}</p>
+          
+          {% if colors %}
+            <div class="color-recommendation p-4 bg-gray-100 rounded-lg mb-4">
+              <p class="font-medium text-center">Color Recommendation:</p>
+              <p class="text-center">{{ colors }}</p>
+            </div>
+          {% endif %}
+          
+          <div class="text-center p-4 bg-gray-100 rounded-lg">
+            <p class="font-medium">Add these items to your wardrobe:</p>
+            <ul class="list-disc list-inside">
+              {% for category in missing_categories %}
+                <li>{{ category }}</li>
+              {% endfor %}
+            </ul>
+            <a href="{{ url_for('upload') }}" class="btn mt-4 inline-block">Upload New Items</a>
+          </div>
+        {% else %}
+          <p class="text-center">No items available to suggest based on your mood.</p>
+        {% endif %}
+      {% else %}
+        <p class="text-center mb-4">Enter your current mood below to get outfit suggestions:</p>
+      {% endif %}
     </div>
 
-    {% if mood %}
-      <div class="card mt-6 p-6">
-        <h3 class="text-xl font-semibold mb-2 text-8A9A5B">Your Mood:</h3>
-        <p class="text-4A4A4A">"{{ mood }}"</p>
-        <p class="mt-2 text-4A4A4A">Sentiment: {{ sentiment | capitalize }}</p>
-        <h3 class="text-xl font-semibold mt-4 mb-2 text-8A9A5B">Suggested Outfit:</h3>
-        <p class="text-4A4A4A">{{ outfit }}</p>
-      </div>
-    {% endif %}
+    <form method="POST" action="{{ url_for('suggest_mood_page') }}" class="mt-6 text-center">
+      <label for="mood" class="mr-2 font-semibold">Enter your mood:</label>
+      <input type="text" id="mood" name="mood" class="p-2 rounded border border-gray-400" placeholder="e.g., happy, sad, excited, tired..." required>
+      <button type="submit" class="btn bg-blue-500 text-white rounded-full py-2 px-4 ml-2">Suggest</button>
+    </form>
 
-    <a href="{{ url_for('home') }}" class="btn mt-6">Back to Home</a>
+    <a href="{{ url_for('home') }}" class="btn mt-6 block text-center">Back to Home</a>
   </div>
 
   <script>
     document.addEventListener('DOMContentLoaded', () => {
-      const form = document.getElementById('moodForm');
+      const navLinks = document.querySelectorAll('.nav-link');
       const loading = document.getElementById('loading');
       const navbar = document.getElementById('navbar');
-      const navLinks = document.querySelectorAll('.nav-link');
-
-      form.addEventListener('submit', (e) => {
-        const mood = document.getElementById('mood').value;
-        if (!mood.trim()) {
-          e.preventDefault();
-          alert('Please enter your mood.');
-          return;
-        }
-        loading.classList.add('show-loading');
-        setTimeout(() => {
-          loading.classList.remove('show-loading');
-        }, 1000);
-      });
+      const form = document.querySelector('form');
+      let lastScroll = 0;
 
       navLinks.forEach(link => {
         link.addEventListener('click', () => {
@@ -77,14 +121,48 @@
         });
       });
 
+      form.addEventListener('submit', () => {
+        loading.classList.add('show-loading');
+        setTimeout(() => {
+          loading.classList.remove('show-loading');
+        }, 1000);
+      });
+
       window.addEventListener('scroll', () => {
-        if (window.scrollY > 50) {
+        const currentScroll = window.pageYOffset;
+        if (currentScroll > lastScroll && currentScroll > 70) {
+          navbar.classList.add('hidden');
+        } else {
+          navbar.classList.remove('hidden');
+        }
+        if (currentScroll > 50) {
           navbar.classList.add('scrolled');
         } else {
           navbar.classList.remove('scrolled');
         }
+        lastScroll = currentScroll;
       });
+
+      const flashMessages = document.querySelectorAll('.flash-message');
+      if (flashMessages.length > 0) {
+        setTimeout(() => {
+          flashMessages.forEach(msg => {
+            msg.style.opacity = '0';
+            setTimeout(() => msg.style.display = 'none', 500);
+          });
+        }, 5000);
+      }
     });
+
+    function toggleMode() {
+      document.body.classList.toggle('dark-mode');
+      localStorage.setItem('darkMode', document.body.classList.contains('dark-mode'));
+    }
+
+    if (localStorage.getItem('darkMode') === 'true') {
+      document.body.classList.add('dark-mode');
+      document.getElementById('mode-switch').checked = true;
+    }
   </script>
 </body>
 </html>

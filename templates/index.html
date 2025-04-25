@@ -34,7 +34,9 @@
       <p class="text-lg mb-6">Organize your wardrobe, get outfit suggestions, and style your day!</p>
       <a href="{{ url_for('upload') }}" class="btn">Get Started</a>
     </div>
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
+
+    <!-- Updated grid with 4 cards -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mt-8">
       <div class="card">
         <h3 class="text-xl font-semibold mb-2">Upload Clothes</h3>
         <p>Add new items to your wardrobe with ease.</p>
@@ -49,6 +51,11 @@
         <h3 class="text-xl font-semibold mb-2">Get Suggestions</h3>
         <p>Find the perfect outfit for any occasion.</p>
         <a href="{{ url_for('suggest_outfit_page') }}" class="btn mt-4 block text-center">Get Outfit</a>
+      </div>
+      <div class="card">
+        <h3 class="text-xl font-semibold mb-2">Fashion Advisor</h3>
+        <p>Get personalized fashion advice from our chatbot.</p>
+        <a href="{{ url_for('fashion_chat') }}" class="btn mt-4 block text-center">Chat Now</a>
       </div>
     </div>
   </div>

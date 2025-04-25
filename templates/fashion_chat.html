@@ -1,0 +1,385 @@
+<!-- templates/fashion_chat.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fashion Advisor</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+  <!-- Add font awesome for icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    .chat-container {
+      height: 60vh;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+    }
+    .message {
+      max-width: 80%;
+      margin-bottom: 10px;
+      padding: 10px 15px;
+      border-radius: 20px;
+      line-height: 1.5;
+    }
+    .user-message {
+      background-color: #B76E79;
+      color: white;
+      align-self: flex-end;
+      border-bottom-right-radius: 5px;
+    }
+    .bot-message {
+      background-color: #1E2A44;
+      color: #F8F1E9;
+      align-self: flex-start;
+      border-bottom-left-radius: 5px;
+    }
+    .dark-mode .bot-message {
+      background-color: #2A3752;
+    }
+    .typing-indicator {
+      display: none;
+      align-self: flex-start;
+      background-color: #f1f1f1;
+      padding: 10px 15px;
+      border-radius: 20px;
+      margin-bottom: 10px;
+    }
+    .dark-mode .typing-indicator {
+      background-color: #2A3752;
+      color: #F8F1E9;
+    }
+    .typing-dot {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background-color: #B76E79;
+      margin-right: 3px;
+      animation: typing 1.4s infinite ease-in-out;
+    }
+    .typing-dot:nth-child(1) { animation-delay: 0s; }
+    .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+    .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes typing {
+      0%, 60%, 100% { transform: translateY(0); }
+      30% { transform: translateY(-5px); }
+    }
+    .chat-input-container {
+      display: flex;
+      margin-top: 10px;
+    }
+    .chat-input {
+      flex-grow: 1;
+      padding: 10px 15px;
+      border: 2px solid #B76E79;
+      border-radius: 30px;
+      margin-right: 10px;
+    }
+    .send-button {
+      background-color: #B76E79;
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    .send-button:hover {
+      background-color: #A3535F;
+    }
+    .message p {
+      color: inherit !important;
+    }
+    .suggestion-chip {
+      display: inline-block;
+      background-color: #EDE4DB;
+      color: #1E2A44;
+      padding: 8px 15px;
+      border-radius: 20px;
+      margin: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s, transform 0.2s;
+    }
+    .dark-mode .suggestion-chip {
+      background-color: #253151;
+      color: #F8F1E9;
+    }
+    .suggestion-chip:hover {
+      background-color: #B76E79;
+      color: white;
+      transform: scale(1.05);
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar" id="navbar">
+    <div class="container flex justify-between items-center py-4">
+      <a href="{{ url_for('home') }}" class="navbar-brand">Smart Closet</a>
+      <div class="nav-links">
+        <a href="{{ url_for('home') }}" class="nav-link">Home</a>
+        <a href="{{ url_for('upload') }}" class="nav-link">Upload</a>
+        <a href="{{ url_for('view_wardrobe') }}" class="nav-link">Wardrobe</a>
+        <a href="{{ url_for('suggest_outfit_page') }}" class="nav-link">Weather Outfit</a>
+        <a href="{{ url_for('suggest_mood_page') }}" class="nav-link">Mood Outfit</a>
+        <a href="{{ url_for('fashion_chat') }}" class="nav-link">Fashion Chat</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="mode-toggle">
+    <input type="checkbox" id="mode-switch" class="mode-switch" onchange="toggleMode()">
+    <label for="mode-switch"></label>
+  </div>
+
+  <div class="loading" id="loading"></div>
+
+  <div class="container mt-24 mx-auto max-w-4xl">
+    <h1 class="text-3xl font-bold mb-6 text-center">Fashion Advisor Chat</h1>
+
+    <!-- API Key Setup Section (Initially Hidden) -->
+    <div id="api-key-section" class="card p-6 mx-auto max-w-2xl mb-6 {% if has_api_key %}hidden{% endif %}">
+      <h3 class="text-xl font-semibold mb-4 text-center">Setup Fashion Advisor</h3>
+      <form id="api-key-form" class="space-y-4">
+        <div>
+          <label for="gemini-api-key" class="block text-sm font-medium">Enter your Gemini API Key:</label>
+          <input type="password" id="gemini-api-key" name="api_key" class="mt-1 w-full p-2 border border-gray-300 rounded-md" placeholder="API Key" required>
+        </div>
+        <div class="flex justify-center">
+          <button type="submit" class="btn">Save API Key</button>
+        </div>
+        <p class="text-sm text-center mt-2">
+          Your API key is stored securely in your browser and never sent to our servers.
+        </p>
+      </form>
+    </div>
+
+    <!-- Chat Interface -->
+    <div id="chat-interface" class="card p-6 mx-auto max-w-2xl {% if not has_api_key %}hidden{% endif %}">
+      <div class="chat-container" id="chat-container">
+        <!-- Bot welcome message -->
+        <div class="message bot-message">
+          <p>👋 Hi there! I'm your fashion advisor. Ask me anything about fashion, outfit combinations, or style advice!</p>
+        </div>
+      </div>
+      
+      <!-- Suggestion chips -->
+      <div class="suggestions-container flex flex-wrap justify-center my-4">
+        <div class="suggestion-chip" onclick="useSuggestion('How to style a white shirt?')">How to style a white shirt?</div>
+        <div class="suggestion-chip" onclick="useSuggestion('What colors work well together?')">What colors work well together?</div>
+        <div class="suggestion-chip" onclick="useSuggestion('Outfit for a job interview')">Outfit for a job interview</div>
+        <div class="suggestion-chip" onclick="useSuggestion('Trends this season')">Trends this season</div>
+      </div>
+      
+      <!-- Typing indicator -->
+      <div class="typing-indicator" id="typing-indicator">
+        <span class="typing-dot"></span>
+        <span class="typing-dot"></span>
+        <span class="typing-dot"></span>
+      </div>
+      
+      <!-- Input area -->
+      <div class="chat-input-container">
+        <input type="text" class="chat-input" id="user-input" placeholder="Ask me about fashion..." onkeypress="handleKeyPress(event)">
+        <button class="send-button" onclick="sendMessage()">
+          <i class="fas fa-paper-plane"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let geminiApiKey = localStorage.getItem('geminiApiKey');
+    
+    document.addEventListener('DOMContentLoaded', () => {
+      // Show appropriate section based on API key presence
+      updateInterfaceVisibility();
+      
+      // Handle API key form submission
+      document.getElementById('api-key-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const apiKey = document.getElementById('gemini-api-key').value.trim();
+        if (apiKey) {
+          localStorage.setItem('geminiApiKey', apiKey);
+          geminiApiKey = apiKey;
+          // Validate API key (make a test request)
+          validateApiKey(apiKey);
+        }
+      });
+      
+      // Navigation and UI setup
+      const navLinks = document.querySelectorAll('.nav-link');
+      const loading = document.getElementById('loading');
+      const navbar = document.getElementById('navbar');
+      let lastScroll = 0;
+
+      navLinks.forEach(link => {
+        link.addEventListener('click', () => {
+          loading.classList.add('show-loading');
+          setTimeout(() => {
+            loading.classList.remove('show-loading');
+          }, 1000);
+        });
+      });
+
+      window.addEventListener('scroll', () => {
+        const currentScroll = window.pageYOffset;
+        if (currentScroll > lastScroll && currentScroll > 70) {
+          navbar.classList.add('hidden');
+        } else {
+          navbar.classList.remove('hidden');
+        }
+        if (currentScroll > 50) {
+          navbar.classList.add('scrolled');
+        } else {
+          navbar.classList.remove('scrolled');
+        }
+        lastScroll = currentScroll;
+      });
+    });
+    
+    function updateInterfaceVisibility() {
+      if (geminiApiKey) {
+        document.getElementById('api-key-section').classList.add('hidden');
+        document.getElementById('chat-interface').classList.remove('hidden');
+      } else {
+        document.getElementById('api-key-section').classList.remove('hidden');
+        document.getElementById('chat-interface').classList.add('hidden');
+      }
+    }
+    
+    function validateApiKey(apiKey) {
+      // Show typing indicator
+      const typingIndicator = document.getElementById('typing-indicator');
+      typingIndicator.style.display = 'block';
+      
+      // Make a test request to validate the API key
+      fetch('/validate_api_key', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ api_key: apiKey })
+      })
+      .then(response => response.json())
+      .then(data => {
+        typingIndicator.style.display = 'none';
+        if (data.success) {
+          updateInterfaceVisibility();
+          addBotMessage("Thanks! I'm ready to help with your fashion questions.");
+        } else {
+          localStorage.removeItem('geminiApiKey');
+          geminiApiKey = null;
+          alert("Invalid API key. Please try again with a valid Gemini API key.");
+        }
+      })
+      .catch(error => {
+        typingIndicator.style.display = 'none';
+        alert("Error validating API key: " + error.message);
+      });
+    }
+    
+    function sendMessage() {
+      const userInput = document.getElementById('user-input');
+      const message = userInput.value.trim();
+      
+      if (message) {
+        // Add user message to chat
+        addUserMessage(message);
+        userInput.value = '';
+        
+        // Show typing indicator
+        const typingIndicator = document.getElementById('typing-indicator');
+        typingIndicator.style.display = 'block';
+        
+        // Scroll to bottom
+        scrollToBottom();
+        
+        // Send message to server
+        fetch('/get_fashion_advice', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ 
+            message: message,
+            api_key: geminiApiKey
+          })
+        })
+        .then(response => response.json())
+        .then(data => {
+          // Hide typing indicator and add bot response
+          typingIndicator.style.display = 'none';
+          addBotMessage(data.response);
+        })
+        .catch(error => {
+          typingIndicator.style.display = 'none';
+          addBotMessage("Sorry, I encountered an error: " + error.message);
+        });
+      }
+    }
+    
+    function addUserMessage(message) {
+      const chatContainer = document.getElementById('chat-container');
+      const messageElement = document.createElement('div');
+      messageElement.className = 'message user-message';
+      messageElement.innerHTML = `<p>${escapeHtml(message)}</p>`;
+      chatContainer.appendChild(messageElement);
+      scrollToBottom();
+    }
+    
+    function addBotMessage(message) {
+      const chatContainer = document.getElementById('chat-container');
+      const messageElement = document.createElement('div');
+      messageElement.className = 'message bot-message';
+      
+      // Convert line breaks to <br> tags and format the response
+      const formattedMessage = message.replace(/\n/g, '<br>');
+      messageElement.innerHTML = `<p>${formattedMessage}</p>`;
+      
+      chatContainer.appendChild(messageElement);
+      scrollToBottom();
+    }
+    
+    function useSuggestion(suggestion) {
+      document.getElementById('user-input').value = suggestion;
+      sendMessage();
+    }
+    
+    function handleKeyPress(event) {
+      if (event.key === 'Enter') {
+        sendMessage();
+      }
+    }
+    
+    function scrollToBottom() {
+      const chatContainer = document.getElementById('chat-container');
+      chatContainer.scrollTop = chatContainer.scrollHeight;
+    }
+    
+    function escapeHtml(unsafe) {
+      return unsafe
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+    
+    function toggleMode() {
+      document.body.classList.toggle('dark-mode');
+      localStorage.setItem('darkMode', document.body.classList.contains('dark-mode'));
+    }
+
+    if (localStorage.getItem('darkMode') === 'true') {
+      document.body.classList.add('dark-mode');
+      document.getElementById('mode-switch').checked = true;
+    }
+  </script>
+</body>
+</html>

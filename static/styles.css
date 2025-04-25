@@ -6,8 +6,10 @@
   --bg-dark: linear-gradient(135deg, #1E2A44 0%, #2F3A5F 100%);
   --navbar-light: linear-gradient(90deg, #1E2A44, #2F3A5F);
   --navbar-dark: linear-gradient(90deg, #161F33, #253151);
-  --text-light: #F8F1E9; /* Ivory for hero and general text in light mode */
+  --text-light: #1E2A44; /* Dark navy for visibility in light mode */
   --text-dark: #F8F1E9; /* Ivory for visibility in dark mode */
+  --text-heading-light: #1E2A44; /* Navy for headings in light mode */
+  --text-heading-dark: #F8F1E9; /* Ivory for headings in dark mode */
   --accent: #B76E79;
   --card-bg-light: #F9F9F9; /* Light gray for cards in light mode */
   --card-bg-dark: #2A3752;
@@ -139,24 +141,44 @@ body.dark-mode .card {
   box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
 }
 
-.card h3 {
-  color: #1E2A44; /* Navy text for headings in light mode */
+.card h3, .card h4 {
+  color: var(--text-heading-light); /* Navy text for headings in light mode */
   font-size: 1.5rem;
   font-weight: 600;
   margin-bottom: 0.5rem;
 }
 
-body.dark-mode .card h3 {
-  color: #F8F1E9; /* Ivory text for headings in dark mode */
+body.dark-mode .card h3, body.dark-mode .card h4 {
+  color: var(--text-heading-dark); /* Ivory text for headings in dark mode */
 }
 
 .card p {
-  color: #1E2A44; /* Navy text for paragraphs in light mode */
+  color: var(--text-light); /* Dark navy for visibility in light mode */
   font-size: 1rem;
 }
 
 body.dark-mode .card p {
-  color: #F8F1E9; /* Ivory text for paragraphs in dark mode */
+  color: var(--text-dark); /* Ivory for visibility in dark mode */
+}
+
+.wardrobe-item p {
+  color: var(--text-light); /* Dark navy for visibility in light mode */
+  font-size: 1rem;
+}
+
+body.dark-mode .wardrobe-item p {
+  color: var(--text-dark); /* Ivory for visibility in dark mode */
+}
+
+.card label {
+  color: var(--text-heading-light); /* Navy text for labels in light mode */
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  display: block;
+}
+
+body.dark-mode .card label {
+  color: var(--text-heading-dark); /* Ivory text for labels in dark mode */
 }
 
 .btn {
@@ -182,17 +204,6 @@ body.dark-mode .card p {
 
 .form-group {
   margin-bottom: 1.5rem;
-}
-
-.form-group label {
-  display: block;
-  font-weight: 600;
-  margin-bottom: 0.5rem;
-  color: var(--text-light);
-}
-
-body.dark-mode .form-group label {
-  color: var(--text-dark);
 }
 
 .form-group input,
@@ -344,6 +355,38 @@ body.dark-mode h1 {
 
 .mode-switch:checked::before {
   transform: translateX(26px);
+}
+
+.flash-message {
+  transition: opacity 0.5s ease;
+}
+
+.flash-message.success {
+  background-color: #d1fae5;
+  color: #065f46;
+  border-left: 4px solid #10b981;
+}
+
+.flash-message.info {
+  background-color: #e0f2fe;
+  color: #0369a1;
+  border-left: 4px solid #0ea5e9;
+}
+
+.flash-message.warning {
+  background-color: #fef3c7;
+  color: #92400e;
+  border-left: 4px solid #f59e0b;
+}
+
+.flash-message.error {
+  background-color: #fee2e2;
+  color: #b91c1c;
+  border-left: 4px solid #ef4444;
+}
+
+.color-recommendation {
+  border-left: 4px solid #B76E79;
 }
 
 @keyframes fadeIn {
